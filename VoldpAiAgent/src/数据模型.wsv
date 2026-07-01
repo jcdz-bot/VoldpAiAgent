@@ -1,0 +1,188 @@
+<火山程序 类型 = "通常" 版本 = 1 />
+
+包 火山.程序
+
+// 数据库管理类
+类 数据库管理类 <公开>
+{
+    变量 数据库 <公开 静态 参考 类型 = Gorm数据库类>
+
+    方法 初始化数据库 <公开 静态>
+    {
+        变量 数据库路径 <类型 = 文本型>
+        数据库路径 = 配置管理类.状态目录 + "/hermes.db"
+
+        变量 错误 <类型 = 错误接口 值 = 空对象>
+        数据库 = Gorm数据库类.打开 (GormSQLite驱动程序类.打开 (数据库路径), 空对象, 错误.取地址 ())
+        如果 (工具类.错误非空 (错误))
+        {
+            换行输出 ("打开数据库失败")
+            返回
+        }
+
+        // 自动迁移所有表
+        错误 = 数据库.自动迁移 (新建对象 (会话模型))
+        错误 = 数据库.自动迁移 (新建对象 (消息模型))
+        错误 = 数据库.自动迁移 (新建对象 (设置模型))
+        错误 = 数据库.自动迁移 (新建对象 (供应商模型))
+        错误 = 数据库.自动迁移 (新建对象 (工作区模型))
+        错误 = 数据库.自动迁移 (新建对象 (配置文件模型))
+        错误 = 数据库.自动迁移 (新建对象 (插件模型))
+        错误 = 数据库.自动迁移 (新建对象 (待办模型))
+        错误 = 数据库.自动迁移 (新建对象 (轮次日志模型))
+        错误 = 数据库.自动迁移 (新建对象 (运行日志模型))
+        错误 = 数据库.自动迁移 (新建对象 (技能使用模型))
+
+        换行输出 ("[ok] 数据库初始化完成: " + 数据库路径)
+    }
+}
+
+// 会话模型
+类 会话模型 <公开 @输出名 = "Session">
+{
+    变量 ID <公开 类型 = 文本型 @服务器.标签 = "gorm:\"column:session_id;primarykey\" json:\"session_id\"" @输出名 = "SessionID">
+    变量 标题 <公开 类型 = 文本型 @服务器.标签 = "json:\"title\"" @输出名 = "Title">
+    变量 创建时间 <公开 类型 = 长整数 @服务器.标签 = "json:\"created_at\"" @输出名 = "CreatedAt">
+    变量 更新时间 <公开 类型 = 长整数 @服务器.标签 = "json:\"updated_at\"" @输出名 = "UpdatedAt">
+    变量 固定 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"pinned\"" @输出名 = "Pinned">
+    变量 归档 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"archived\"" @输出名 = "Archived">
+    变量 供应商 <公开 类型 = 文本型 @服务器.标签 = "json:\"provider\"" @输出名 = "Provider">
+    变量 模型 <公开 类型 = 文本型 @服务器.标签 = "json:\"model\"" @输出名 = "Model">
+    变量 配置文件 <公开 类型 = 文本型 @服务器.标签 = "json:\"profile\"" @输出名 = "Profile">
+    变量 工作区 <公开 类型 = 文本型 @服务器.标签 = "json:\"workspace\"" @输出名 = "Workspace">
+    变量 个性 <公开 类型 = 文本型 @服务器.标签 = "json:\"personality\"" @输出名 = "Personality">
+    变量 输入令牌数 <公开 类型 = 长整数 @服务器.标签 = "json:\"input_tokens\"" @输出名 = "InputTokens">
+    变量 输出令牌数 <公开 类型 = 长整数 @服务器.标签 = "json:\"output_tokens\"" @输出名 = "OutputTokens">
+    变量 估算费用 <公开 类型 = 小数 @服务器.标签 = "json:\"estimated_cost\"" @输出名 = "EstimatedCost">
+    变量 手动标题 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"manual_title\"" @输出名 = "ManualTitle">
+    变量 LLM标题已生成 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"llm_title_generated\"" @输出名 = "LLMTitleGenerated">
+    变量 消息数 <公开 类型 = 整数 @服务器.标签 = "json:\"message_count\"" @输出名 = "MessageCount">
+    变量 最后消息时间 <公开 类型 = 长整数 @服务器.标签 = "json:\"last_message_at\"" @输出名 = "LastMessageAt">
+    变量 父会话ID <公开 类型 = 文本型 @服务器.标签 = "json:\"parent_session_id\"" @输出名 = "ParentSessionID">
+    变量 会话来源 <公开 类型 = 文本型 @服务器.标签 = "json:\"session_source\"" @输出名 = "SessionSource">
+    变量 消息列表 <公开 类型 = "消息模型 []" @服务器.标签 = "gorm:\"-\" json:\"messages\"" @输出名 = "Messages">
+    变量 最后用量 <公开 类型 = 文本型 @服务器.标签 = "gorm:\"-\" json:\"last_usage\"" @输出名 = "LastUsage">
+    变量 模型供应商 <公开 类型 = 文本型 @服务器.标签 = "json:\"model_provider\"" @输出名 = "ModelProvider">
+    变量 活跃流ID <公开 类型 = 文本型 @服务器.标签 = "gorm:\"-\" json:\"active_stream_id\"" @输出名 = "ActiveStreamID">
+    变量 上下文长度 <公开 类型 = 长整数 @服务器.标签 = "gorm:\"-\" json:\"context_length\"" @输出名 = "ContextLength">
+    变量 阈值令牌 <公开 类型 = 长整数 @服务器.标签 = "gorm:\"-\" json:\"threshold_tokens\"" @输出名 = "ThresholdTokens">
+    变量 项目ID <公开 类型 = 文本型 @服务器.标签 = "json:\"project_id\"" @输出名 = "ProjectID">
+    变量 缓存读取令牌 <公开 类型 = 长整数 @服务器.标签 = "json:\"cache_read_tokens\"" @输出名 = "CacheReadTokens">
+    变量 缓存写入令牌 <公开 类型 = 长整数 @服务器.标签 = "json:\"cache_write_tokens\"" @输出名 = "CacheWriteTokens">
+    变量 待处理用户消息 <公开 类型 = 文本型 @服务器.标签 = "json:\"pending_user_message\"" @输出名 = "PendingUserMessage">
+    变量 待处理开始时间 <公开 类型 = 长整数 @服务器.标签 = "json:\"pending_started_at\"" @输出名 = "PendingStartedAt">
+    变量 网关路由 <公开 类型 = 文本型 @服务器.标签 = "json:\"gateway_routing\"" @输出名 = "GatewayRouting">
+    变量 工作树路径 <公开 类型 = 文本型 @服务器.标签 = "json:\"worktree_path\"" @输出名 = "WorktreePath">
+    变量 工作树分支 <公开 类型 = 文本型 @服务器.标签 = "json:\"worktree_branch\"" @输出名 = "WorktreeBranch">
+    变量 启用工具集 <公开 类型 = 文本型 @服务器.标签 = "json:\"enabled_toolsets\"" @输出名 = "EnabledToolsets">
+    变量 只读 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"read_only\"" @输出名 = "ReadOnly">
+}
+
+// 消息模型
+类 消息模型 <公开 @输出名 = "Message">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 会话ID <公开 类型 = 文本型 @服务器.标签 = "gorm:\"index\" json:\"session_id\"" @输出名 = "SessionID">
+    变量 角色 <公开 类型 = 文本型 @服务器.标签 = "json:\"role\"" @输出名 = "Role">
+    变量 内容 <公开 类型 = 文本型 @服务器.标签 = "json:\"content\"" @输出名 = "Content">
+    变量 时间戳 <公开 类型 = 长整数 @服务器.标签 = "json:\"timestamp\"" @输出名 = "Timestamp">
+    变量 附件 <公开 类型 = 文本型 @服务器.标签 = "json:\"attachments\"" @输出名 = "Attachments">
+    变量 部分标记 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"_partial\"" @输出名 = "Partial">
+    变量 恢复标记 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"_recovered\"" @输出名 = "Recovered">
+    变量 工具调用 <公开 类型 = 文本型 @服务器.标签 = "json:\"tool_calls\"" @输出名 = "ToolCalls">
+    变量 模型名 <公开 类型 = 文本型 @服务器.标签 = "json:\"model\"" @输出名 = "Model">
+    变量 用量 <公开 类型 = 文本型 @服务器.标签 = "json:\"usage\"" @输出名 = "Usage">
+}
+
+// 设置模型
+类 设置模型 <公开 @输出名 = "Setting">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 键 <公开 类型 = 文本型 @服务器.标签 = "gorm:\"uniqueIndex\" json:\"key\"" @输出名 = "Key">
+    变量 值 <公开 类型 = 文本型 @服务器.标签 = "json:\"value\"" @输出名 = "Value">
+    变量 默认工作区 <公开 类型 = 文本型 @服务器.标签 = "json:\"default_workspace\"" @输出名 = "DefaultWorkspace">
+    变量 密码哈希 <公开 类型 = 文本型 @服务器.标签 = "json:\"password_hash\"" @输出名 = "PasswordHash">
+}
+
+// 供应商模型
+类 供应商模型 <公开 @输出名 = "Provider">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 名称 <公开 类型 = 文本型 @服务器.标签 = "gorm:\"uniqueIndex\" json:\"name\"" @输出名 = "Name">
+    变量 类型 <公开 类型 = 文本型 @服务器.标签 = "json:\"type\"" @输出名 = "Type">
+    变量 配置 <公开 类型 = 文本型 @服务器.标签 = "json:\"config\"" @输出名 = "Config">
+    变量 启用 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"enabled\"" @输出名 = "Enabled">
+    变量 可配置 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"configurable\"" @输出名 = "Configurable">
+    变量 有密钥 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"has_key\"" @输出名 = "HasKey">
+    变量 密钥来源 <公开 类型 = 文本型 @服务器.标签 = "json:\"key_source\"" @输出名 = "KeySource">
+    变量 模型总数 <公开 类型 = 整数 @服务器.标签 = "json:\"models_total\"" @输出名 = "ModelsTotal">
+    变量 基础URL <公开 类型 = 文本型 @服务器.标签 = "json:\"base_url\"" @输出名 = "BaseURL">
+}
+
+// 工作区模型
+类 工作区模型 <公开 @输出名 = "Workspace">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 路径 <公开 类型 = 文本型 @服务器.标签 = "json:\"path\"" @输出名 = "Path">
+    变量 名称 <公开 类型 = 文本型 @服务器.标签 = "json:\"name\"" @输出名 = "Name">
+    变量 最后使用时间 <公开 类型 = 长整数 @服务器.标签 = "json:\"last_used\"" @输出名 = "LastUsed">
+}
+
+// 配置文件模型
+类 配置文件模型 <公开 @输出名 = "Profile">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 名称 <公开 类型 = 文本型 @服务器.标签 = "gorm:\"uniqueIndex\" json:\"name\"" @输出名 = "Name">
+    变量 显示名称 <公开 类型 = 文本型 @服务器.标签 = "json:\"display_name\"" @输出名 = "DisplayName">
+    变量 Hermes主目录 <公开 类型 = 文本型 @服务器.标签 = "json:\"hermes_home\"" @输出名 = "HermesHome">
+}
+
+// 插件模型
+类 插件模型 <公开 @输出名 = "Plugin">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 名称 <公开 类型 = 文本型 @服务器.标签 = "json:\"name\"" @输出名 = "Name">
+    变量 描述 <公开 类型 = 文本型 @服务器.标签 = "json:\"description\"" @输出名 = "Description">
+    变量 版本 <公开 类型 = 文本型 @服务器.标签 = "json:\"version\"" @输出名 = "Version">
+    变量 启用 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"enabled\"" @输出名 = "Enabled">
+}
+
+// 待办模型
+类 待办模型 <公开 @输出名 = "Todo">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 会话ID <公开 类型 = 文本型 @服务器.标签 = "gorm:\"index\" json:\"session_id\"" @输出名 = "SessionID">
+    变量 内容 <公开 类型 = 文本型 @服务器.标签 = "json:\"content\"" @输出名 = "Content">
+    变量 完成 <公开 类型 = 逻辑型 @服务器.标签 = "json:\"done\"" @输出名 = "Done">
+    变量 顺序 <公开 类型 = 整数 @服务器.标签 = "json:\"order\"" @输出名 = "Order">
+}
+
+// 轮次日志模型
+类 轮次日志模型 <公开 @输出名 = "TurnJournal">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 会话ID <公开 类型 = 文本型 @服务器.标签 = "gorm:\"index\" json:\"session_id\"" @输出名 = "SessionID">
+    变量 轮次索引 <公开 类型 = 整数 @服务器.标签 = "json:\"turn_index\"" @输出名 = "TurnIndex">
+    变量 角色 <公开 类型 = 文本型 @服务器.标签 = "json:\"role\"" @输出名 = "Role">
+    变量 摘要 <公开 类型 = 文本型 @服务器.标签 = "json:\"summary\"" @输出名 = "Summary">
+    变量 时间戳 <公开 类型 = 长整数 @服务器.标签 = "json:\"timestamp\"" @输出名 = "Timestamp">
+}
+
+// 运行日志模型
+类 运行日志模型 <公开 @输出名 = "RunJournal">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 会话ID <公开 类型 = 文本型 @服务器.标签 = "gorm:\"index\" json:\"session_id\"" @输出名 = "SessionID">
+    变量 事件类型 <公开 类型 = 文本型 @服务器.标签 = "json:\"event_type\"" @输出名 = "EventType">
+    变量 详情 <公开 类型 = 文本型 @服务器.标签 = "json:\"details\"" @输出名 = "Details">
+    变量 时间戳 <公开 类型 = 长整数 @服务器.标签 = "json:\"timestamp\"" @输出名 = "Timestamp">
+}
+
+// 技能使用模型
+类 技能使用模型 <公开 @输出名 = "SkillUsage">
+{
+    变量 ID <公开 类型 = 整数 @服务器.标签 = "gorm:\"primarykey\" json:\"id\"" @输出名 = "ID">
+    变量 会话ID <公开 类型 = 文本型 @服务器.标签 = "gorm:\"index\" json:\"session_id\"" @输出名 = "SessionID">
+    变量 技能名称 <公开 类型 = 文本型 @服务器.标签 = "json:\"skill_name\"" @输出名 = "SkillName">
+    变量 使用时间 <公开 类型 = 长整数 @服务器.标签 = "json:\"used_at\"" @输出名 = "UsedAt">
+}

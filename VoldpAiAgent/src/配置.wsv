@@ -1,0 +1,113 @@
+<火山程序 类型 = "通常" 版本 = 1 />
+
+包 火山.程序
+
+// 配置管理类 - 管理所有配置项
+类 配置管理类 <公开>
+{
+    变量 主机 <公开 静态 类型 = 文本型 值 = "127.0.0.1">
+    变量 端口 <公开 静态 类型 = 整数 值 = 8787>
+    变量 状态目录 <公开 静态 类型 = 文本型>
+    变量 会话目录 <公开 静态 类型 = 文本型>
+    变量 默认工作区 <公开 静态 类型 = 文本型>
+    变量 设置文件 <公开 静态 类型 = 文本型>
+    变量 密码哈希 <公开 静态 类型 = 文本型>
+    变量 会话TTL <公开 静态 类型 = 整数 值 = 2592000>
+    变量 Hermes主目录 <公开 静态 类型 = 文本型>
+    变量 TLS启用 <公开 静态 类型 = 逻辑型 值 = 假>
+    变量 TLS证书 <公开 静态 类型 = 文本型>
+    变量 TLS密钥 <公开 静态 类型 = 文本型>
+
+    # @ func Rg_QuHuanJingBianLiang(name, defaultValue string) string {
+    # @     val := os.Getenv(name)
+    # @     if val == "" { return defaultValue }
+    # @     return val
+    # @ }
+
+    方法 取环境变量 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 变量名 <类型 = 文本型>
+    参数 默认值 <类型 = 文本型>
+    {
+        @ Rg_QuHuanJingBianLiang(@<变量名>, @<默认值>)
+    }
+
+    # @ func Rg_QuMoRenHermesZhuMuLu() string {
+    # @     home, _ := os.UserHomeDir()
+    # @     return filepath.Join(home, ".hermes")
+    # @ }
+
+    方法 取默认Hermes主目录 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_QuMoRenHermesZhuMuLu()
+    }
+
+    # @ func Rg_ChuangJianMuLu(dir string) {
+    # @     os.MkdirAll(dir, 0755)
+    # @ }
+
+    方法 创建目录如果不存在 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 目录路径 <类型 = 文本型>
+    {
+        @ Rg_ChuangJianMuLu(@<目录路径>)
+    }
+
+    # @ func Rg_DaoZhengShu(text string) int {
+    # @     val, _ := strconv.Atoi(text)
+    # @     return val
+    # @ }
+
+    方法 到整数 <公开 静态 类型 = 整数 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 文本 <类型 = 文本型>
+    {
+        @ Rg_DaoZhengShu(@<文本>)
+    }
+
+    方法 初始化 <公开 静态>
+    {
+        // 读取环境变量配置
+        主机 = 取环境变量 ("HERMES_WEBUI_HOST", "127.0.0.1")
+        端口 = 到整数 (取环境变量 ("HERMES_WEBUI_PORT", "8787"))
+
+        // Hermes主目录
+        Hermes主目录 = 取环境变量 ("HERMES_HOME", 取默认Hermes主目录 ())
+
+        // 状态目录
+        状态目录 = 取环境变量 ("HERMES_WEBUI_STATE_DIR", Hermes主目录 + "/webui")
+        会话目录 = 状态目录 + "/sessions"
+        设置文件 = 状态目录 + "/settings.json"
+
+        // 默认工作区
+        默认工作区 = 取环境变量 ("HERMES_WEBUI_DEFAULT_WORKSPACE", 取当前目录 ())
+
+        // 密码配置
+        密码哈希 = 取环境变量 ("HERMES_WEBUI_PASSWORD", "")
+
+        // TLS配置
+        变量 证书路径 <类型 = 文本型>
+        变量 密钥路径 <类型 = 文本型>
+        证书路径 = 取环境变量 ("HERMES_WEBUI_TLS_CERT", "")
+        密钥路径 = 取环境变量 ("HERMES_WEBUI_TLS_KEY", "")
+        如果 (证书路径 != "" 且 密钥路径 != "")
+        {
+            TLS启用 = 真
+            TLS证书 = 证书路径
+            TLS密钥 = 密钥路径
+        }
+
+        // 确保必要目录存在
+        创建目录如果不存在 (状态目录)
+        创建目录如果不存在 (会话目录)
+
+        换行输出 ("[ok] 配置初始化完成, 端口: " + 到文本 (端口))
+    }
+
+    # @ func Rg_QuDangQianMuLu() string {
+    # @     dir, _ := os.Getwd()
+    # @     return dir
+    # @ }
+
+    方法 取当前目录 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_QuDangQianMuLu()
+    }
+}

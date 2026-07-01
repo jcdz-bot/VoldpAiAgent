@@ -1,0 +1,104 @@
+<火山程序 类型 = "通常" 版本 = 1 />
+
+包 火山.程序
+
+// 认证工具类
+类 认证工具类 <公开 @服务器.导入 = "github.com/golang-jwt/jwt/v5">
+{
+    # @ func Rg_ShengChengJWT2(secret string, userID string, expiry int, errPtr *error) string {
+    # @     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+    # @         "user_id": userID,
+    # @         "exp": time.Now().Add(time.Duration(expiry) * time.Second).Unix(),
+    # @         "iat": time.Now().Unix(),
+    # @     })
+    # @     tokenStr, err := token.SignedString([]byte(secret))
+    # @     if errPtr != nil { *errPtr = err }
+    # @     return tokenStr
+    # @ }
+
+    方法 生成JWT <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 密钥 <类型 = 文本型>
+    参数 用户ID <类型 = 文本型>
+    参数 过期时间 <类型 = 整数>
+    参数 错误对象 <类型 = 错误接口地址>
+    {
+        @ Rg_ShengChengJWT2(@<密钥>, @<用户ID>, @<过期时间>, @<错误对象>)
+    }
+
+    # @ func Rg_YanZhengJWT(secret string, tokenStr string, errPtr *error) string {
+    # @     token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+    # @         return []byte(secret), nil
+    # @     })
+    # @     if err != nil {
+    # @         if errPtr != nil { *errPtr = err }
+    # @         return ""
+    # @     }
+    # @     if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+    # @         if userID, ok := claims["user_id"].(string); ok {
+    # @             return userID
+    # @         }
+    # @     }
+    # @     if errPtr != nil { *errPtr = fmt.Errorf("invalid token") }
+    # @     return ""
+    # @ }
+
+    方法 验证JWT <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 密钥 <类型 = 文本型>
+    参数 令牌 <类型 = 文本型>
+    参数 错误对象 <类型 = 错误接口地址>
+    {
+        @ Rg_YanZhengJWT(@<密钥>, @<令牌>, @<错误对象>)
+    }
+
+    方法 验证密码 <公开 静态 类型 = 逻辑型>
+    参数 密码 <类型 = 文本型>
+    参数 哈希 <类型 = 文本型>
+    {
+        返回 (密码 == 哈希)
+    }
+
+    # @ func Rg_HashMima(password string) string {
+    # @     hash := sha256.Sum256([]byte(password))
+    # @     return hex.EncodeToString(hash[:])
+    # @ }
+
+    方法 哈希密码 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 密码 <类型 = 文本型>
+    {
+        @ Rg_HashMima(@<密码>)
+    }
+
+    # @ func Rg_ShengChengSuiJiToken() string {
+    # @     b := make([]byte, 32)
+    # @     rand.Read(b)
+    # @     return hex.EncodeToString(b)
+    # @ }
+
+    方法 生成随机Token <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_ShengChengSuiJiToken()
+    }
+
+    方法 是否公开路径 <公开 静态 类型 = 逻辑型>
+    参数 路径 <类型 = 文本型>
+    {
+        变量 公开路径列表 <类型 = "文本型 []" 值 = { "/login", "/health", "/favicon.ico", "/sw.js", "/api/auth/login", "/api/auth/status", "/api/auth/passkey/options", "/api/auth/passkey/login", "/manifest.json", "/manifest.webmanifest", "/session/manifest.json", "/session/manifest.webmanifest" }>
+
+        变量 索引 <类型 = 整数>
+        循环 (0, 取数组成员数 (公开路径列表), 索引, 1)
+        {
+            如果 (路径 == 公开路径列表 [索引])
+            {
+                返回 (真)
+            }
+        }
+
+        // 静态资源路径
+        如果 (工具类.是否以文本开头 (路径, "/static/") 或 工具类.是否以文本开头 (路径, "/session/static/"))
+        {
+            返回 (真)
+        }
+
+        返回 (假)
+    }
+}

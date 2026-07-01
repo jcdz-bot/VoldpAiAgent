@@ -1,0 +1,56 @@
+﻿<火山程序 类型 = "通常" 版本 = 1 />
+
+包 火山.程序
+
+// 流式传输类 - SSE流式响应
+类 流式传输类 <公开>
+{
+    # @ func Rg_KaiShiSSE(c *gin.Context) {
+    # @     c.Header("Content-Type", "text/event-stream")
+    # @     c.Header("Cache-Control", "no-cache")
+    # @     c.Header("Connection", "keep-alive")
+    # @     c.Header("X-Accel-Buffering", "no")
+    # @ }
+
+    方法 开始SSE <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        @ Rg_KaiShiSSE(@<上下文>)
+    }
+
+    # @ func Rg_FaSongSSEShiJian(c *gin.Context, event string, data string) {
+    # @     fmt.Fprintf(c.Writer, "event: %s\ndata: %s\n\n", event, data)
+    # @     c.Writer.(http.Flusher).Flush()
+    # @ }
+
+    方法 发送SSE事件 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 事件 <类型 = 文本型>
+    参数 数据 <类型 = 文本型>
+    {
+        @ Rg_FaSongSSEShiJian(@<上下文>, @<事件>, @<数据>)
+    }
+
+    # @ func Rg_FaSongSSEShuJu(c *gin.Context, data string) {
+    # @     fmt.Fprintf(c.Writer, "data: %s\n\n", data)
+    # @     c.Writer.(http.Flusher).Flush()
+    # @ }
+
+    方法 发送SSE数据 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 数据 <类型 = 文本型>
+    {
+        @ Rg_FaSongSSEShuJu(@<上下文>, @<数据>)
+    }
+
+    # @ func Rg_JieShuSSE(c *gin.Context) {
+    # @     fmt.Fprintf(c.Writer, "event: done\ndata: [DONE]\n\n")
+    # @     c.Writer.(http.Flusher).Flush()
+    # @ }
+
+    方法 结束SSE <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        @ Rg_JieShuSSE(@<上下文>)
+    }
+}

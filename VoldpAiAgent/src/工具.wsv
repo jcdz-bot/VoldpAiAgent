@@ -1,0 +1,456 @@
+<火山程序 类型 = "通常" 版本 = 1 />
+
+包 火山.程序
+
+// 工具类 - 通用工具函数
+类 工具类 <公开>
+{
+    # @ func Rg_CreateError(msg string) error { return fmt.Errorf("%s", msg) }
+
+    方法 创建错误 <公开 静态 类型 = 错误接口 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 消息 <类型 = 文本型>
+    {
+        @ Rg_CreateError(@<消息>)
+    }
+
+    # @ func Rg_WriteNilError(errPtr *error) { if errPtr != nil { *errPtr = nil } }
+
+    方法 写空错误 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 错误对象 <类型 = 错误接口地址>
+    {
+        @ Rg_WriteNilError(@<错误对象>)
+    }
+
+    # @ func Rg_WriteError(errPtr *error, err error) { if errPtr != nil { *errPtr = err } }
+
+    方法 写错误 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 错误对象 <类型 = 错误接口地址>
+    参数 错误值 <类型 = 错误接口>
+    {
+        @ Rg_WriteError(@<错误对象>, @<错误值>)
+    }
+
+    # @ func Rg_ReturnNil() error { return nil }
+
+    方法 返回空错误 <公开 静态 类型 = 错误接口 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_ReturnNil()
+    }
+
+    # @ func Rg_IsNil(err error) bool { return err == nil }
+
+    方法 错误为空 <公开 静态 类型 = 逻辑型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 错误值 <类型 = 错误接口>
+    {
+        @ Rg_IsNil(@<错误值>)
+    }
+
+    # @ func Rg_IsNotNil(err error) bool { return err != nil }
+
+    方法 错误非空 <公开 静态 类型 = 逻辑型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 错误值 <类型 = 错误接口>
+    {
+        @ Rg_IsNotNil(@<错误值>)
+    }
+
+    # @ func Rg_ShenChengUUID() string {
+    # @     b := make([]byte, 16)
+    # @     rand.Read(b)
+    # @     b[6] = (b[6] & 0x0f) | 0x40
+    # @     b[8] = (b[8] & 0x3f) | 0x80
+    # @     return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+    # @ }
+
+    方法 生成UUID <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_ShenChengUUID()
+    }
+
+    # @ func Rg_QuDangQianShiJianChuo() int64 {
+    # @     return time.Now().Unix()
+    # @ }
+
+    方法 取当前时间戳 <公开 静态 类型 = 长整数 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_QuDangQianShiJianChuo()
+    }
+
+    # @ func Rg_QuDangQianHaoMiaoShiJianChuo() int64 {
+    # @     return time.Now().UnixMilli()
+    # @ }
+
+    方法 取当前毫秒时间戳 <公开 静态 类型 = 长整数 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_QuDangQianHaoMiaoShiJianChuo()
+    }
+
+    # @ func Rg_JSONQuWenBen(data []byte, key string) string {
+    # @     var obj map[string]interface{}
+    # @     if err := json.Unmarshal(data, &obj); err != nil { return "" }
+    # @     val, ok := obj[key]
+    # @     if !ok { return "" }
+    # @     switch v := val.(type) {
+    # @     case string: return v
+    # @     case float64: return fmt.Sprintf("%v", v)
+    # @     case bool: return fmt.Sprintf("%v", v)
+    # @     default: return fmt.Sprintf("%v", v)
+    # @     }
+    # @ }
+
+    方法 JSON取文本 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 数据 <类型 = "字节 []">
+    参数 键名 <类型 = 文本型>
+    {
+        @ Rg_JSONQuWenBen(@<数据>, @<键名>)
+    }
+
+    # @ func Rg_JSONQuZhengShu(data []byte, key string) int {
+    # @     var obj map[string]interface{}
+    # @     if err := json.Unmarshal(data, &obj); err != nil { return 0 }
+    # @     val, ok := obj[key]
+    # @     if !ok { return 0 }
+    # @     switch v := val.(type) {
+    # @     case float64: return int(v)
+    # @     case int: return v
+    # @     default: return 0
+    # @     }
+    # @ }
+
+    方法 JSON取整数 <公开 静态 类型 = 整数 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 数据 <类型 = "字节 []">
+    参数 键名 <类型 = 文本型>
+    {
+        @ Rg_JSONQuZhengShu(@<数据>, @<键名>)
+    }
+
+    # @ func Rg_JSONQuLuoJiZhi(data []byte, key string) bool {
+    # @     var obj map[string]interface{}
+    # @     if err := json.Unmarshal(data, &obj); err != nil { return false }
+    # @     val, ok := obj[key]
+    # @     if !ok { return false }
+    # @     if b, ok := val.(bool); ok { return b }
+    # @     return false
+    # @ }
+
+    方法 JSON取逻辑值 <公开 静态 类型 = 逻辑型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 数据 <类型 = "字节 []">
+    参数 键名 <类型 = 文本型>
+    {
+        @ Rg_JSONQuLuoJiZhi(@<数据>, @<键名>)
+    }
+
+    # @ func Rg_ShiFouYiWenBenKaiTou(text, prefix string) bool {
+    # @     return strings.HasPrefix(text, prefix)
+    # @ }
+
+    方法 是否以文本开头 <公开 静态 类型 = 逻辑型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 文本 <类型 = 文本型>
+    参数 前缀 <类型 = 文本型>
+    {
+        @ Rg_ShiFouYiWenBenKaiTou(@<文本>, @<前缀>)
+    }
+
+    # @ func Rg_ShiFouYiWenBenJieWei(text, suffix string) bool {
+    # @     return strings.HasSuffix(text, suffix)
+    # @ }
+
+    方法 是否以文本结尾 <公开 静态 类型 = 逻辑型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 文本 <类型 = 文本型>
+    参数 后缀 <类型 = 文本型>
+    {
+        @ Rg_ShiFouYiWenBenJieWei(@<文本>, @<后缀>)
+    }
+
+    # @ func Rg_WenBenTiHuan(src, old, new string) string {
+    # @     return strings.ReplaceAll(src, old, new)
+    # @ }
+
+    方法 文本替换 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 源文本 <类型 = 文本型>
+    参数 旧文本 <类型 = 文本型>
+    参数 新文本 <类型 = 文本型>
+    {
+        @ Rg_WenBenTiHuan(@<源文本>, @<旧文本>, @<新文本>)
+    }
+
+    # @ func Rg_QuSuiJiToken() string {
+    # @     b := make([]byte, 32)
+    # @     rand.Read(b)
+    # @     return hex.EncodeToString(b)
+    # @ }
+
+    方法 生成随机Token <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_QuSuiJiToken()
+    }
+
+    # @ func Rg_ShenChengSuiJiHuiHuaID() string {
+    # @     b := make([]byte, 8)
+    # @     rand.Read(b)
+    # @     return hex.EncodeToString(b)
+    # @ }
+
+    方法 生成随机会话ID <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_ShenChengSuiJiHuiHuaID()
+    }
+
+    # @ func Rg_QuQingQiuTiJSON(c *gin.Context, key string) string {
+    # @     var bodyBytes []byte
+    # @     if cached, exists := c.Get("_rawBody"); exists {
+    # @         bodyBytes = cached.([]byte)
+    # @     } else {
+    # @         body, err := c.GetRawData()
+    # @         if err != nil { return "" }
+    # @         bodyBytes = body
+    # @         c.Set("_rawBody", bodyBytes)
+    # @     }
+    # @     var obj map[string]interface{}
+    # @     if err := json.Unmarshal(bodyBytes, &obj); err != nil { return "" }
+    # @     val, ok := obj[key]
+    # @     if !ok { return "" }
+    # @     switch v := val.(type) {
+    # @     case string: return v
+    # @     case float64: return fmt.Sprintf("%v", v)
+    # @     case bool: return fmt.Sprintf("%v", v)
+    # @     default: return fmt.Sprintf("%v", v)
+    # @     }
+    # @ }
+
+    方法 取请求体JSON值 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 键名 <类型 = 文本型>
+    {
+        @ Rg_QuQingQiuTiJSON(@<上下文>, @<键名>)
+    }
+
+    # @ func Rg_QuQingQiuTou(c *gin.Context, key string) string {
+    # @     return c.GetHeader(key)
+    # @ }
+
+    方法 取请求头值 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 头名称 <类型 = 文本型>
+    {
+        @ Rg_QuQingQiuTou(@<上下文>, @<头名称>)
+    }
+
+    # @ func Rg_QuCookie(c *gin.Context, key string) string {
+    # @     cookie, err := c.Cookie(key)
+    # @     if err != nil { return "" }
+    # @     return cookie
+    # @ }
+
+    方法 取Cookie值 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 键名 <类型 = 文本型>
+    {
+        @ Rg_QuCookie(@<上下文>, @<键名>)
+    }
+
+    # @ func Rg_QuAuthorizationToken(c *gin.Context) string {
+    # @     // 1. 尝试从Cookie获取 (hermes_session)
+    # @     cookie, err := c.Cookie("hermes_session")
+    # @     if err == nil && cookie != "" {
+    # @         return cookie
+    # @     }
+    # @     // 2. 尝试从Authorization头获取
+    # @     auth := c.GetHeader("Authorization")
+    # @     if auth != "" {
+    # @         if strings.HasPrefix(auth, "Bearer ") {
+    # @             return strings.TrimPrefix(auth, "Bearer ")
+    # @         }
+    # @         return auth
+    # @     }
+    # @     // 3. 尝试从查询参数获取
+    # @     token := c.Query("token")
+    # @     if token != "" {
+    # @         return token
+    # @     }
+    # @     return ""
+    # @ }
+
+    方法 取认证令牌 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        @ Rg_QuAuthorizationToken(@<上下文>)
+    }
+
+    # @ func Rg_SheZhiRenZhengCookie(c *gin.Context, token string, maxAge int) {
+    # @     c.SetCookie("hermes_session", token, maxAge, "/", "", false, true)
+    # @ }
+
+    方法 设置认证Cookie <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 令牌 <类型 = 文本型>
+    参数 最大存活秒数 <类型 = 整数>
+    {
+        @ Rg_SheZhiRenZhengCookie(@<上下文>, @<令牌>, @<最大存活秒数>)
+    }
+
+    # @ func Rg_QingChuRenZhengCookie(c *gin.Context) {
+    # @     c.SetCookie("hermes_session", "", -1, "/", "", false, true)
+    # @ }
+
+    方法 清除认证Cookie <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        @ Rg_QingChuRenZhengCookie(@<上下文>)
+    }
+
+    # @ func Rg_BaoCunSheZhi(key string, value string) {
+    # @     var setting Setting
+    # @     result := Rg_ShuJuKu62.Where("key = ?", key).First(&setting)
+    # @     setting.Key = key
+    # @     setting.Value = value
+    # @     if result.Error != nil || setting.ID == 0 {
+    # @         Rg_ShuJuKu62.Create(&setting)
+    # @     } else {
+    # @         Rg_ShuJuKu62.Save(&setting)
+    # @     }
+    # @ }
+
+    方法 保存设置 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 键 <类型 = 文本型>
+    参数 值 <类型 = 文本型>
+    {
+        @ Rg_BaoCunSheZhi(@<键>, @<值>)
+    }
+
+    # @ func Rg_QuMoXingLieBiao(c *gin.Context) {
+    # @     var providers []Provider
+    # @     Rg_ShuJuKu62.Order("id ASC").Find(&providers, "1=1")
+    # @     var defaultModelSetting Setting
+    # @     Rg_ShuJuKu62.First(&defaultModelSetting, "key = ?", "default_model")
+    # @     var defaultProviderSetting Setting
+    # @     Rg_ShuJuKu62.First(&defaultProviderSetting, "key = ?", "default_model_provider")
+    # @     activeProvider := ""
+    # @     for _, p := range providers {
+    # @         if p.Enabled && p.HasKey {
+    # @             activeProvider = p.Name
+    # @             break
+    # @         }
+    # @     }
+    # @     if len(providers) > 0 && activeProvider == "" && providers[0].Enabled {
+    # @         activeProvider = providers[0].Name
+    # @     }
+    # @     if defaultProviderSetting.Value != "" {
+    # @         activeProvider = defaultProviderSetting.Value
+    # @     }
+    # @     type modelEntry struct {
+    # @         ID    string `json:"id"`
+    # @         Label string `json:"label"`
+    # @     }
+    # @     type groupEntry struct {
+    # @         Provider string       `json:"provider"`
+    # @         Models   []modelEntry `json:"models"`
+    # @     }
+    # @     var groups []groupEntry
+    # @     var allModels []modelEntry
+    # @     for _, p := range providers {
+    # @         if !p.Enabled { continue }
+    # @         var models []modelEntry
+    # @         models = append(models, modelEntry{ID: p.Name + "/default", Label: "Default Model"})
+    # @         groups = append(groups, groupEntry{Provider: p.Name, Models: models})
+    # @         allModels = append(allModels, models...)
+    # @     }
+    # @     c.JSON(200, gin.H{
+    # @         "active_provider": activeProvider,
+    # @         "default_model":   defaultModelSetting.Value,
+    # @         "groups":          groups,
+    # @         "models":          allModels,
+    # @     })
+    # @ }
+
+    方法 取模型列表 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        @ Rg_QuMoXingLieBiao(@<上下文>)
+    }
+
+    # @ func Rg_QuGongYingShangLieBiao(c *gin.Context) {
+    # @     var providers []Provider
+    # @     Rg_ShuJuKu62.Order("id ASC").Find(&providers, "1=1")
+    # @     type safeProvider struct {
+    # @         ID           int    `json:"id"`
+    # @         Name         string `json:"name"`
+    # @         Type         string `json:"type"`
+    # @         Enabled      bool   `json:"enabled"`
+    # @         Configurable bool   `json:"configurable"`
+    # @         HasKey       bool   `json:"has_key"`
+    # @         KeySource    string `json:"key_source"`
+    # @         ModelsTotal  int    `json:"models_total"`
+    # @         BaseURL      string `json:"base_url,omitempty"`
+    # @     }
+    # @     var result []safeProvider
+    # @     for _, p := range providers {
+    # @         baseURL := ""
+    # @         if p.Config != "" {
+    # @             parts := strings.Split(p.Config, "|")
+    # @             for _, part := range parts {
+    # @                 if strings.HasPrefix(part, "base_url=") {
+    # @                     baseURL = strings.TrimPrefix(part, "base_url=")
+    # @                 }
+    # @             }
+    # @         }
+    # @         result = append(result, safeProvider{
+    # @             ID:           p.ID,
+    # @             Name:         p.Name,
+    # @             Type:         p.Type,
+    # @             Enabled:      p.Enabled,
+    # @             Configurable: p.Configurable,
+    # @             HasKey:       p.HasKey,
+    # @             KeySource:    p.KeySource,
+    # @             ModelsTotal:  p.ModelsTotal,
+    # @             BaseURL:      baseURL,
+    # @         })
+    # @     }
+    # @     c.JSON(200, gin.H{"providers": result})
+    # @ }
+
+    方法 取供应商列表 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        @ Rg_QuGongYingShangLieBiao(@<上下文>)
+    }
+
+    # @ func Rg_SheZhiProfileCookie(c *gin.Context, name string) {
+    # @     c.SetCookie("hermes_profile", name, 86400, "/", "", false, false)
+    # @ }
+
+    方法 设置ProfileCookie <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 名称 <类型 = 文本型>
+    {
+        @ Rg_SheZhiProfileCookie(@<上下文>, @<名称>)
+    }
+
+    # @ func Rg_QuHuiHuaLieBiaoByProfile(c *gin.Context) string {
+    # @     cookie, err := c.Cookie("hermes_profile")
+    # @     if err != nil || cookie == "" {
+    # @         return "default"
+    # @     }
+    # @     return cookie
+    # @ }
+
+    方法 取ProfileCookie <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        @ Rg_QuHuiHuaLieBiaoByProfile(@<上下文>)
+    }
+
+    # @ func Rg_QuLuJingZuiHouBuFen(path string) string {
+    # @     path = strings.TrimRight(path, "/\\")
+    # @     idx := strings.LastIndexAny(path, "/\\")
+    # @     if idx >= 0 {
+    # @         return path[idx+1:]
+    # @     }
+    # @     return path
+    # @ }
+
+    方法 取路径最后部分 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 路径 <类型 = 文本型>
+    {
+        @ Rg_QuLuJingZuiHouBuFen(@<路径>)
+    }
+}

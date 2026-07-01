@@ -1,0 +1,408 @@
+<火山程序 类型 = "通常" 版本 = 1 />
+
+包 火山.程序
+
+// 聊天流管理类 - 管理SSE流通道和AI聊天
+类 聊天流管理类 <公开 @服务器.导入 = "io" @服务器.导入 = "bufio" @服务器.导入 = "strings" @服务器.导入 = "crypto/rand" @服务器.导入 = "encoding/hex" @服务器.导入 = "encoding/json" @服务器.导入 = "net/http" @服务器.导入 = "bytes" @服务器.导入 = "fmt" @服务器.导入 = "time" @服务器.导入 = "sync">
+{
+    # @ var Rg_STREAMS = struct {
+    # @     sync.RWMutex
+    # @     m map[string]chan string
+    # @ }{m: make(map[string]chan string)}
+    # @
+    # @ var Rg_CANCEL_FLAGS = struct {
+    # @     sync.RWMutex
+    # @     m map[string]bool
+    # @ }{m: make(map[string]bool)}
+    # @
+    # @ var Rg_STREAM_SESSIONS = struct {
+    # @     sync.RWMutex
+    # @     m map[string]string
+    # @ }{m: make(map[string]string)}
+
+    方法 创建流通道 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 会话ID <类型 = 文本型>
+    {
+        @ Rg_ChuanJianLiuTongDao(@<会话ID>)
+    }
+
+    # @ func Rg_ChuanJianLiuTongDao(sessionID string) string {
+    # @     b := make([]byte, 16)
+    # @     rand.Read(b)
+    # @     streamID := hex.EncodeToString(b)
+    # @     ch := make(chan string, 512)
+    # @     Rg_STREAMS.Lock()
+    # @     Rg_STREAMS.m[streamID] = ch
+    # @     Rg_STREAMS.Unlock()
+    # @     Rg_STREAM_SESSIONS.Lock()
+    # @     Rg_STREAM_SESSIONS.m[streamID] = sessionID
+    # @     Rg_STREAM_SESSIONS.Unlock()
+    # @     return streamID
+    # @ }
+
+    方法 发送流事件 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 流ID <类型 = 文本型>
+    参数 事件数据 <类型 = 文本型>
+    {
+        @ Rg_FaSongLiuShiJian(@<流ID>, @<事件数据>)
+    }
+
+    # @ func Rg_FaSongLiuShiJian(streamID string, eventData string) {
+    # @     Rg_STREAMS.RLock()
+    # @     ch, ok := Rg_STREAMS.m[streamID]
+    # @     Rg_STREAMS.RUnlock()
+    # @     if ok {
+    # @         select {
+    # @         case ch <- eventData:
+    # @         default:
+    # @         }
+    # @     }
+    # @ }
+
+    方法 关闭流通道 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 流ID <类型 = 文本型>
+    {
+        @ Rg_GuanBiLiuTongDao(@<流ID>)
+    }
+
+    # @ func Rg_GuanBiLiuTongDao(streamID string) {
+    # @     Rg_STREAMS.Lock()
+    # @     if ch, ok := Rg_STREAMS.m[streamID]; ok {
+    # @         close(ch)
+    # @         delete(Rg_STREAMS.m, streamID)
+    # @     }
+    # @     Rg_STREAMS.Unlock()
+    # @     Rg_STREAM_SESSIONS.Lock()
+    # @     delete(Rg_STREAM_SESSIONS.m, streamID)
+    # @     Rg_STREAM_SESSIONS.Unlock()
+    # @     Rg_CANCEL_FLAGS.Lock()
+    # @     delete(Rg_CANCEL_FLAGS.m, streamID)
+    # @     Rg_CANCEL_FLAGS.Unlock()
+    # @ }
+
+    方法 设置取消标志 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 流ID <类型 = 文本型>
+    {
+        @ Rg_SheZhiQuXiaoBiaoZhi(@<流ID>)
+    }
+
+    # @ func Rg_SheZhiQuXiaoBiaoZhi(streamID string) {
+    # @     Rg_CANCEL_FLAGS.Lock()
+    # @     Rg_CANCEL_FLAGS.m[streamID] = true
+    # @     Rg_CANCEL_FLAGS.Unlock()
+    # @ }
+
+    方法 检查取消标志 <公开 静态 类型 = 逻辑型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 流ID <类型 = 文本型>
+    {
+        @ Rg_JianChaQuXiaoBiaoZhi(@<流ID>)
+    }
+
+    # @ func Rg_JianChaQuXiaoBiaoZhi(streamID string) bool {
+    # @     Rg_CANCEL_FLAGS.RLock()
+    # @     cancelled := Rg_CANCEL_FLAGS.m[streamID]
+    # @     Rg_CANCEL_FLAGS.RUnlock()
+    # @     return cancelled
+    # @ }
+
+    方法 检查流是否存在 <公开 静态 类型 = 逻辑型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 流ID <类型 = 文本型>
+    {
+        @ Rg_JianChaLiuShiFouCunZai(@<流ID>)
+    }
+
+    # @ func Rg_JianChaLiuShiFouCunZai(streamID string) bool {
+    # @     Rg_STREAMS.RLock()
+    # @     _, ok := Rg_STREAMS.m[streamID]
+    # @     Rg_STREAMS.RUnlock()
+    # @     return ok
+    # @ }
+
+    方法 转发流到SSE <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 上下文 <类型 = Gin上下文>
+    参数 流ID <类型 = 文本型>
+    {
+        @ Rg_ZhuanFaLiuDaooSSE(@<上下文>, @<流ID>)
+    }
+
+    # @ func Rg_ZhuanFaLiuDaooSSE(c *gin.Context, streamID string) {
+    # @     Rg_STREAMS.RLock()
+    # @     ch, ok := Rg_STREAMS.m[streamID]
+    # @     Rg_STREAMS.RUnlock()
+    # @     if !ok {
+    # @         return
+    # @     }
+    # @     c.Stream(func(w io.Writer) bool {
+    # @         select {
+    # @         case msg, ok := <-ch:
+    # @             if !ok {
+    # @                 return false
+    # @             }
+    # @             fmt.Fprint(w, msg)
+    # @             return true
+    # @         case <-c.Request.Context().Done():
+    # @             return false
+    # @         }
+    # @     })
+    # @ }
+
+    方法 启动AI聊天流 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 流ID <类型 = 文本型>
+    参数 会话ID <类型 = 文本型>
+    参数 消息内容 <类型 = 文本型>
+    参数 模型名称 <类型 = 文本型>
+    参数 API地址 <类型 = 文本型>
+    参数 API密钥 <类型 = 文本型>
+    {
+        @ Rg_QiDongAILiaoTianLiu(@<流ID>, @<会话ID>, @<消息内容>, @<模型名称>, @<API地址>, @<API密钥>)
+    }
+
+    # @ func Rg_QiDongAILiaoTianLiu(streamID, sessionID, message, model, baseURL, apiKey string) {
+    # @     go func() {
+    # @         defer func() {
+    # @             Rg_FaSongLiuShiJian(streamID, "event: stream_end\ndata: {\"session_id\":\""+sessionID+"\"}\n\n")
+    # @             Rg_GuanBiLiuTongDao(streamID)
+    # @         }()
+    # @
+    # @         if baseURL == "" {
+    # @             Rg_FaSongLiuShiJian(streamID, "event: apperror\ndata: {\"label\":\"No provider configured\",\"type\":\"no_provider\",\"message\":\"No AI provider is configured. Please add a provider in Settings.\",\"hint\":\"Go to Settings > Providers to configure an OpenAI-compatible API endpoint.\"}\n\n")
+    # @             return
+    # @         }
+    # @
+    # @         type ChatMessage struct {
+    # @             Role    string `json:"role"`
+    # @             Content string `json:"content"`
+    # @         }
+    # @         type ChatRequest struct {
+    # @             Model    string        `json:"model"`
+    # @             Stream   bool          `json:"stream"`
+    # @             Messages []ChatMessage `json:"messages"`
+    # @         }
+    # @
+    # @         var messages []ChatMessage
+    # @         messages = append(messages, ChatMessage{Role: "user", Content: message})
+    # @
+    # @         reqBody := ChatRequest{
+    # @             Model:    model,
+    # @             Stream:   true,
+    # @             Messages: messages,
+    # @         }
+    # @         bodyBytes, err := json.Marshal(reqBody)
+    # @         if err != nil {
+    # @             Rg_FaSongLiuShiJian(streamID, "event: apperror\ndata: {\"label\":\"Request build failed\",\"type\":\"request_error\",\"message\":\""+err.Error()+"\"}\n\n")
+    # @             return
+    # @         }
+    # @
+    # @         var url string
+    # @         trimmedBase := strings.TrimRight(baseURL, "/")
+    # @         if strings.HasSuffix(trimmedBase, "/v1") {
+    # @             url = trimmedBase + "/chat/completions"
+    # @         } else if strings.HasSuffix(trimmedBase, "/v1/chat/completions") {
+    # @             url = trimmedBase
+    # @         } else {
+    # @             url = trimmedBase + "/v1/chat/completions"
+    # @         }
+    # @         req, err := http.NewRequest("POST", url, bytes.NewReader(bodyBytes))
+    # @         if err != nil {
+    # @             Rg_FaSongLiuShiJian(streamID, "event: apperror\ndata: {\"label\":\"Request creation failed\",\"type\":\"request_error\",\"message\":\""+err.Error()+"\"}\n\n")
+    # @             return
+    # @         }
+    # @         req.Header.Set("Content-Type", "application/json")
+    # @         req.Header.Set("Accept", "text/event-stream")
+    # @         if apiKey != "" {
+    # @             req.Header.Set("Authorization", "Bearer "+apiKey)
+    # @         }
+    # @
+    # @         client := &http.Client{Timeout: 300 * time.Second}
+    # @         resp, err := client.Do(req)
+    # @         if err != nil {
+    # @             Rg_FaSongLiuShiJian(streamID, "event: apperror\ndata: {\"label\":\"API request failed\",\"type\":\"api_error\",\"message\":\""+err.Error()+"\",\"hint\":\"Check that the provider API endpoint is reachable and the API key is correct.\"}\n\n")
+    # @             return
+    # @         }
+    # @         defer resp.Body.Close()
+    # @
+    # @         if resp.StatusCode != http.StatusOK {
+    # @             body, _ := io.ReadAll(io.LimitReader(resp.Body, 2048))
+    # @             Rg_FaSongLiuShiJian(streamID, "event: apperror\ndata: {\"label\":\"API returned error\",\"type\":\"api_http_error\",\"message\":\"HTTP "+fmt.Sprintf("%d",resp.StatusCode)+": "+string(body)+"\"}\n\n")
+    # @             return
+    # @         }
+    # @
+    # @         var fullText string
+    # @         scanner := bufio.NewScanner(resp.Body)
+    # @         scanner.Buffer(make([]byte, 0, 64*1024), 1024*1024)
+    # @         for scanner.Scan() {
+    # @             if Rg_JianChaQuXiaoBiaoZhi(streamID) {
+    # @                 Rg_FaSongLiuShiJian(streamID, "event: cancel\ndata: {\"message\":\"Cancelled by user\"}\n\n")
+    # @                 return
+    # @             }
+    # @             line := scanner.Text()
+    # @             if !strings.HasPrefix(line, "data: ") {
+    # @                 continue
+    # @             }
+    # @             data := strings.TrimPrefix(line, "data: ")
+    # @             if data == "[DONE]" {
+    # @                 break
+    # @             }
+    # @             var chunk map[string]interface{}
+    # @             if err := json.Unmarshal([]byte(data), &chunk); err != nil {
+    # @                 continue
+    # @             }
+    # @             choices, _ := chunk["choices"].([]interface{})
+    # @             if len(choices) == 0 {
+    # @                 continue
+    # @             }
+    # @             choice, _ := choices[0].(map[string]interface{})
+    # @             delta, _ := choice["delta"].(map[string]interface{})
+    # @             content, _ := delta["content"].(string)
+    # @             if content != "" {
+    # @                 fullText += content
+    # @                 tokenData, _ := json.Marshal(map[string]string{"text": content})
+    # @                 Rg_FaSongLiuShiJian(streamID, "event: token\ndata: "+string(tokenData)+"\n\n")
+    # @             }
+    # @         }
+    # @
+    # @         assistantText := strings.TrimSpace(fullText)
+    # @         if assistantText != "" {
+    # @             Rg_TianJiaXiaoXi(Rg_ShuJuKu62, sessionID, "assistant", assistantText, new(error))
+    # @         }
+    # @
+    # @         doneData, _ := json.Marshal(map[string]interface{}{
+    # @             "session": map[string]interface{}{
+    # @                 "session_id": sessionID,
+    # @             },
+    # @             "usage": map[string]interface{}{
+    # @                 "input_tokens":  0,
+    # @                 "output_tokens": 0,
+    # @             },
+    # @         })
+    # @         Rg_FaSongLiuShiJian(streamID, "event: done\ndata: "+string(doneData)+"\n\n")
+    # @     }()
+    # @ }
+
+}
+
+// 网关聊天类 - 处理聊天请求
+类 网关聊天类 <公开>
+{
+    方法 处理聊天请求 <公开 静态>
+    参数 上下文 <类型 = Gin上下文>
+    {
+        // 从请求体获取参数
+        变量 会话ID <类型 = 文本型>
+        会话ID = 工具类.取请求体JSON值 (上下文, "session_id")
+        变量 消息 <类型 = 文本型>
+        消息 = 工具类.取请求体JSON值 (上下文, "message")
+        变量 模型 <类型 = 文本型>
+        模型 = 工具类.取请求体JSON值 (上下文, "model")
+        变量 工作区 <类型 = 文本型>
+        工作区 = 工具类.取请求体JSON值 (上下文, "workspace")
+
+        // 验证参数
+        如果 (会话ID == "")
+        {
+            上下文.写出JSON (400, Gin哈希表.创建Gin哈希表 ("error", "session_id is required"))
+            返回
+        }
+        如果 (消息 == "")
+        {
+            上下文.写出JSON (400, Gin哈希表.创建Gin哈希表 ("error", "message is required"))
+            返回
+        }
+
+        // 获取会话
+        变量 错误 <类型 = 错误接口 值 = 空对象>
+        变量 会话 <类型 = 会话模型>
+        会话 = 会话操作类.获取会话 (数据库管理类.数据库, 会话ID, 错误.取地址 ())
+        如果 (工具类.错误非空 (错误))
+        {
+            上下文.写出JSON (404, Gin哈希表.创建Gin哈希表 ("error", "Session not found"))
+            返回
+        }
+
+        // 确定使用的模型
+        如果 (模型 == "")
+        {
+            模型 = 会话.模型
+        }
+        如果 (模型 == "")
+        {
+            模型 = "gpt-3.5-turbo"
+        }
+
+        // 保存用户消息到数据库
+        会话操作类.添加消息 (数据库管理类.数据库, 会话ID, "user", 消息, 错误.取地址 ())
+
+        // 更新会话标题（如果是第一条消息且标题为默认值）
+        如果 (会话.标题 == "新会话" 且 会话.手动标题 == 假)
+        {
+            变量 新标题 <类型 = 文本型>
+            如果 (取文本长度 (消息) > 64)
+            {
+                新标题 = 取文本左边 (消息, 64)
+            }
+            否则
+            {
+                新标题 = 消息
+            }
+            变量 标题错误 <类型 = 错误接口 值 = 空对象>
+            会话操作类.更新标题 (数据库管理类.数据库, 会话ID, 新标题, 标题错误.取地址 ())
+            会话.标题 = 新标题
+        }
+
+        // 获取供应商配置
+        变量 供应商列表 <类型 = "供应商模型 []" 值 = 空对象>
+        数据库管理类.数据库.置Where条件 ("enabled = ?", 真).置Order条件 ("id ASC").查找 (Gorm.取地址 (供应商列表), "1=1")
+
+        变量 API地址 <类型 = 文本型>
+        变量 API密钥 <类型 = 文本型>
+        变量 供应商标识 <类型 = 文本型>
+
+        如果 (取数组成员数 (供应商列表) > 0)
+        {
+            // 使用第一个已启用的供应商
+            变量 供应商 <类型 = 供应商模型>
+            供应商 = 供应商列表 [0]
+            // 从供应商配置中解析API地址和密钥
+            API地址 = 网关聊天类.解析供应商配置 (供应商.配置, "base_url")
+            API密钥 = 网关聊天类.解析供应商配置 (供应商.配置, "api_key")
+            供应商标识 = 供应商.名称
+        }
+
+        // 创建流通道
+        变量 流ID <类型 = 文本型>
+        流ID = 聊天流管理类.创建流通道 (会话ID)
+
+        // 启动AI聊天流（后台协程）
+        聊天流管理类.启动AI聊天流 (流ID, 会话ID, 消息, 模型, API地址, API密钥)
+
+        // 返回stream_id给前端
+        变量 结果 <类型 = Gin哈希表>
+        结果 = Gin哈希表.创建Gin哈希表 ("stream_id", 流ID).添加 ("session_id", 会话ID).添加 ("title", 会话.标题).添加 ("pending_started_at", 工具类.取当前时间戳 ()).添加 ("effective_model", 模型).添加 ("effective_model_provider", 供应商标识)
+        上下文.写出JSON (200, 结果)
+    }
+
+    方法 解析供应商配置 <公开 静态 类型 = 文本型>
+    参数 配置文本 <类型 = 文本型>
+    参数 键名 <类型 = 文本型>
+    {
+        // 配置格式: "base_url=xxx|api_key=xxx" 或 JSON格式
+        变量 结果 <类型 = 文本型>
+        结果 = ""
+        变量 搜索键 <类型 = 文本型>
+        搜索键 = 键名 + "="
+        变量 起始位置 <类型 = 整数>
+        起始位置 = 寻找文本 (配置文本, 搜索键)
+        如果 (起始位置 >= 0)
+        {
+            起始位置 = 起始位置 + 取文本长度 (搜索键)
+            变量 结束位置 <类型 = 整数>
+            结束位置 = 寻找文本 (配置文本, "|", 起始位置)
+            如果 (结束位置 < 0)
+            {
+                结束位置 = 取文本长度 (配置文本)
+            }
+            结果 = 取文本中间 (配置文本, 起始位置, 结束位置 - 起始位置)
+        }
+        返回 (结果)
+    }
+}

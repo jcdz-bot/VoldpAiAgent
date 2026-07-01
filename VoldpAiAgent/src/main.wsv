@@ -1,0 +1,217 @@
+<火山程序 类型 = "通常" 版本 = 1 />
+
+包 火山.程序 <@服务器.导入 = "github.com/gin-gonic/gin" @服务器.导入 = "github.com/gin-contrib/cors" @服务器.导入 = "gorm.io/gorm"
+        @服务器.导入 = "gorm.io/driver/sqlite" @服务器.导入 = "github.com/golang-jwt/jwt/v5" @服务器.导入 = "net/http" @服务器.导入 = "encoding/json"
+        @服务器.导入 = "sync" @服务器.导入 = "path/filepath" @服务器.导入 = "regexp" @服务器.导入 = "crypto/rand" @服务器.导入 = "crypto/sha256"
+        @服务器.导入 = "encoding/hex" @服务器.导入 = "fmt" @服务器.导入 = "os" @服务器.导入 = "strconv" @服务器.导入 = "io" @服务器.导入 = "bufio"
+        @服务器.导入 = "strings" @服务器.导入 = "bytes" @服务器.导入 = "time" @服务器.导入 = "encoding/base64">
+
+# 主启动类 - 程序入口
+
+类 启动类 <公开 基础类 = 程序类 @服务器.附属文件 = "static > static">
+{
+    方法 启动方法 <公开 类型 = 整数>
+    {
+        换行输出 ("[webui] Hermes WebUI 火山语言版本启动中...")
+
+        // 初始化配置
+        配置管理类.初始化 ()
+
+        // 初始化数据库
+        数据库管理类.初始化数据库 ()
+
+        // 启动HTTP服务器
+        变量 服务器 <类型 = HTTP服务器类>
+        变量 引擎 <参考 类型 = Gin引擎类>
+        服务器.地址 = ":" + 到文本 (配置管理类.端口)
+        引擎 = Gin引擎类.取默认引擎 ()
+
+        // 注册CORS中间件
+        注册CORS中间件 (引擎)
+
+        // 注册认证中间件
+        注册认证中间件 (引擎)
+
+        // 先注册所有API路由(必须在静态文件之前)
+        路由管理类.当前引擎 = 引擎
+        路由管理类.数据库 = 数据库管理类.数据库
+        路由管理类.注册所有路由 ()
+
+        // 使用可执行文件目录动态定位静态文件(由@服务器.附属文件属性在编译时自动复制到输出目录)
+        变量 项目目录 <类型 = 文本型>
+        项目目录 = 取可执行文件目录 () + "/static"
+        换行输出 ("[debug] static dir: " + 项目目录)
+
+        // 临时调试路由: 检测目录是否存在
+        引擎.注册GET2 ("/_debug/path")
+        {
+            变量 上下文 <参考 类型 = Gin上下文>
+            上下文 = Gin路由处理程序接口.取上下文 ()
+            变量 结果 <类型 = 文本型>
+            结果 = "exeDir=" + 取可执行文件目录 () + " staticDir=" + 项目目录
+            上下文.写出文本 (200, 结果)
+        }
+
+        注册静态文件服务 (引擎, 项目目录)
+
+        服务器.置处理程序 (引擎.HTTP处理程序接口)
+        换行输出 ("  Hermes WebUI listening on http://" + 配置管理类.主机 + ":" + 到文本 (配置管理类.端口))
+        换行输出 ("  Then open:     http://localhost:" + 到文本 (配置管理类.端口))
+
+        服务器.监听并服务 ()
+        返回 (0)
+    }
+
+    # @ func Rg_QuKeZhixingWenJianMuLu() string {
+    # @     exePath, err := os.Executable()
+    # @     if err != nil { return "." }
+    # @     return filepath.Dir(exePath)
+    # @ }
+
+    方法 取可执行文件目录 <公开 静态 类型 = 文本型 @嵌入式方法 = "" @禁止流程检查 = 真>
+    {
+        @ Rg_QuKeZhixingWenJianMuLu()
+    }
+
+    # @ func Rg_ZhuCeCORSZhongJianJian(engine *gin.Engine) {
+    # @     config := cors.DefaultConfig()
+    # @     config.AllowAllOrigins = true
+    # @     config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
+    # @     config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization", "X-Hermes-CSRF-Token"}
+    # @     config.ExposeHeaders = []string{"Content-Length"}
+    # @     config.AllowCredentials = true
+    # @     engine.Use(cors.New(config))
+    # @ }
+
+    方法 注册CORS中间件 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 引擎 <类型 = Gin引擎类>
+    {
+        @ Rg_ZhuCeCORSZhongJianJian(@<引擎>)
+    }
+
+    # @ func Rg_ZhuCeRenZhengZhongJianJian(engine *gin.Engine) {
+    # @     publicPaths := map[string]bool{
+    # @         "/login": true, "/health": true, "/favicon.ico": true, "/sw.js": true,
+    # @         "/api/auth/login": true, "/api/auth/status": true, "/api/auth/logout": true,
+    # @         "/api/auth/passkey/options": true, "/api/auth/passkey/login": true,
+    # @         "/api/onboarding/status": true, "/api/onboarding/probe": true,
+    # @         "/api/onboarding/setup": true, "/api/onboarding/complete": true,
+    # @         "/manifest.json": true, "/manifest.webmanifest": true,
+    # @     }
+    # @     engine.Use(func(c *gin.Context) {
+    # @         path := c.Request.URL.Path
+    # @         // 公开路径直接放行
+    # @         if publicPaths[path] {
+    # @             c.Next()
+    # @             return
+    # @         }
+    # @         // 静态资源路径放行
+    # @         if len(path) >= 8 && path[:8] == "/static/" {
+    # @             c.Next()
+    # @             return
+    # @         }
+    # @         // 非API路径放行（SPA页面等）
+    # @         if len(path) < 5 || path[:5] != "/api/" {
+    # @             c.Next()
+    # @             return
+    # @         }
+    # @         // API路径需要检查认证
+    # @         // 检查是否启用了认证（从设置表读取password_hash键）
+    # @         var setting Setting
+    # @         Rg_ShuJuKu62.First(&setting, "key = ?", "password_hash")
+    # @         if setting.Value == "" {
+    # @             // 未启用认证，放行
+    # @             c.Next()
+    # @             return
+    # @         }
+    # @         // 检查认证令牌
+    # @         token := Rg_QuAuthorizationToken(c)
+    # @         if token == "" {
+    # @             c.AbortWithStatusJSON(401, gin.H{"error": "Authentication required"})
+    # @             return
+    # @         }
+    # @         // 验证JWT
+    # @         var verifyErr error
+    # @         userID := Rg_YanZhengJWT(setting.Value, token, &verifyErr)
+    # @         if verifyErr != nil || userID == "" {
+    # @             c.AbortWithStatusJSON(401, gin.H{"error": "Invalid or expired token"})
+    # @             return
+    # @         }
+    # @         c.Next()
+    # @     })
+    # @ }
+
+    方法 注册认证中间件 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 引擎 <类型 = Gin引擎类>
+    {
+        @ Rg_ZhuCeRenZhengZhongJianJian(@<引擎>)
+    }
+
+    # @ func Rg_ZhuCeJingTaiWenJianFuWu(engine *gin.Engine, dir string) {
+    # @     loginHTML := `<!doctype html>
+    # @ <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    # @ <title>Hermes — Login</title>
+    # @ <style>
+    # @ *{box-sizing:border-box;margin:0;padding:0}
+    # @ body{background:#1a1a2e;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    # @   height:100vh;display:flex;align-items:center;justify-content:center}
+    # @ .card{background:#16213e;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:36px 32px;
+    # @   width:320px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+    # @ .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(145deg,#e8a030,#e94560);
+    # @   display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;
+    # @   margin:0 auto 12px;box-shadow:0 2px 12px rgba(233,69,96,.3)}
+    # @ h1{font-size:18px;font-weight:600;margin-bottom:4px}
+    # @ .sub{font-size:12px;color:#8888aa;margin-bottom:24px}
+    # @ input{width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+    # @   background:rgba(255,255,255,.04);color:#e8e8f0;font-size:14px;outline:none;margin-bottom:14px;
+    # @   transition:border-color .15s}
+    # @ input:focus{border-color:rgba(124,185,255,.5);box-shadow:0 0 0 3px rgba(124,185,255,.1)}
+    # @ button{width:100%;padding:10px;border-radius:10px;border:none;background:rgba(124,185,255,.15);
+    # @   border:1px solid rgba(124,185,255,.3);color:#7cb9ff;font-size:14px;font-weight:600;cursor:pointer;
+    # @   transition:all .15s}
+    # @ button:hover{background:rgba(124,185,255,.25)}
+    # @ .passkey-login{margin-top:10px;background:rgba(255,255,255,.04);border-color:rgba(232,160,48,.35);color:#e8a030}
+    # @ .err{color:#e94560;font-size:12px;margin-top:10px;display:none}
+    # @ </style></head><body>
+    # @ <div class="card">
+    # @   <div class="logo">H</div>
+    # @   <h1>Hermes</h1>
+    # @   <p class="sub">Enter your password to continue</p>
+    # @   <form id="login-form" data-invalid-pw="Invalid password" data-conn-failed="Connection failed">
+    # @     <input type="password" id="pw" placeholder="Password" autofocus>
+    # @     <button type="submit">Sign in</button>
+    # @     <button type="button" id="passkey-login" class="passkey-login" style="display:none">Sign in with passkey</button>
+    # @   </form>
+    # @   <div class="err" id="err"></div>
+    # @ </div>
+    # @ <script src="static/login.js"></script>
+    # @ </body></html>`
+    # @
+    # @     engine.NoRoute(func(c *gin.Context) {
+    # @         path := c.Request.URL.Path
+    # @         // /login 返回专门的登录页面
+    # @         if path == "/login" {
+    # @             c.Data(200, "text/html; charset=utf-8", []byte(loginHTML))
+    # @             return
+    # @         }
+    # @         // 去掉 /static/ 前缀，因为dir已经指向static目录
+    # @         if strings.HasPrefix(path, "/static/") {
+    # @             path = strings.TrimPrefix(path, "/static/")
+    # @         }
+    # @         filePath := filepath.Join(dir, path)
+    # @         if info, err := os.Stat(filePath); err == nil && !info.IsDir() {
+    # @             c.File(filePath)
+    # @             return
+    # @         }
+    # @         // SPA fallback: serve index.html for all unmatched routes
+    # @         c.File(filepath.Join(dir, "index.html"))
+    # @     })
+    # @ }
+
+    方法 注册静态文件服务 <公开 静态 @嵌入式方法 = "" @禁止流程检查 = 真>
+    参数 引擎 <类型 = Gin引擎类>
+    参数 目录 <类型 = 文本型>
+    {
+        @ Rg_ZhuCeJingTaiWenJianFuWu(@<引擎>, @<目录>)
+    }
+}
