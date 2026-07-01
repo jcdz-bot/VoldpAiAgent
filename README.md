@@ -1,4 +1,4 @@
-<img width="1058" height="768" alt="支付宝微信赞助" src="https://github.com/user-attachments/assets/97d66fe6-34a8-4763-90f3-fe75971b3f94" /><img width="1920" height="962" alt="用AI给Linux系统杀毒1" src="https://github.com/user-attachments/assets/4dc1cb4f-e09d-4fe5-aa9c-c4fbbe9257b0" /><img width="1920" height="1026" alt="自动化操作软件" src="https://github.com/user-attachments/assets/d522ffb6-14c3-454e-869a-52c68aba975d" /># VoldpAiAgent
+# VoldpAiAgent
 重磅发布！火山AI智能体（别名：火山爱马仕、火山龙虾、火山克劳德；英文名：VoldpAiAgent、VoldpHermes、VoldpClaw、VoldpClaude）。
 
 耗时30天，我基于开源项目 HermesAgent，使用国产编程语言“火山语言”开发了一套跨平台 Go 服务端，并打造了对中文用户友好的前端 AI 智能体。
@@ -14,7 +14,6 @@
 我主要深耕自动化领域，后续将持续迭代，逐步解锁自动化办公、自动化玩游戏、配合脑机接口操控无人机与机器人、自动操作 CNC 数控机床等强大能力。
 
 项目核心代码完全开源免费，持续更新，欢迎一起探索智能自动化的无限可能。
-
 
 <img width="1920" height="962" alt="网络搜索资讯" src="https://github.com/user-attachments/assets/e1afffce-0154-4d96-b35d-141b992be0d4" />
 <img width="1920" height="962" alt="软件编程开发" src="https://github.com/user-attachments/assets/fccaa4eb-90ee-4399-b203-79081e9bec33" />
