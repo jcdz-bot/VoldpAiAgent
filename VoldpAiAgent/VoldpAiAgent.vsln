@@ -1,0 +1,21 @@
+doc_format_version = 1
+name = VoldpAiAgent
+property.settings.active_project_name = VoldpAiAgent
+
+root_filter
+{
+    child_filter
+    {
+        filter1
+        {
+            build_order = 0
+            project_file_name = "VoldpAiAgent.vprj"
+            projects_dependent
+            type = project
+        }
+
+        num_child_filters = 1
+    }
+
+    name = root
+}

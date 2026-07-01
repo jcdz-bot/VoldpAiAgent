@@ -1,0 +1,762 @@
+doc_format_version = 1
+project_identifier = "wutao.vproject.pc.server.1"
+
+root_filter
+{
+    child_filter
+    {
+        filter1
+        {
+            child_filter
+            {
+                filter1
+                {
+                    collapsed = true
+                    files.num_files = 15
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\base\\base.vgrp"
+                    name = 服务器基本类
+                }
+
+                filter10
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\ftp\\s_ftp.vgrp"
+                    name = FTP客户端
+                }
+
+                filter11
+                {
+                    collapsed = true
+                    files.num_files = 3
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\crypto\\crypto.vgrp"
+                    name = 加解密
+                }
+
+                filter12
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\hash\\hash.vgrp"
+                    name = 数据散列
+                }
+
+                filter13
+                {
+                    collapsed = true
+                    files.num_files = 2
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\net\\net.vgrp"
+                    name = 网络
+                }
+
+                filter14
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gin\\gin.vgrp"
+                    name = GIN
+                }
+
+                filter15
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\encoding\\xml\\xml.vgrp"
+                    name = XML
+                }
+
+                filter16
+                {
+                    collapsed = true
+                    files.num_files = 7
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\net\\http\\http.vgrp"
+                    name = HTTP
+                }
+
+                filter17
+                {
+                    collapsed = true
+                    files.num_files = 3
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\template\\template.vgrp"
+                    name = 模板
+                }
+
+                filter18
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gin_mid_session\\gin_mid_session.vgrp"
+                    name = GIN会话中间件
+                }
+
+                filter19
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gin_i18n\\gin_i18n.vgrp"
+                    name = GIN多语言
+                }
+
+                filter2
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\casbin\\casbin.vgrp"
+                    name = Casbin访问控制
+                }
+
+                filter20
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\GoTools\\s_GinTools.vgrp"
+                    name = Gin工具类
+                }
+
+                filter21
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\GoTools\\s_GoTools.vgrp"
+                    name = 服务器工具类
+                }
+
+                filter22
+                {
+                    collapsed = true
+                    files.num_files = 2
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\compress\\compress.vgrp"
+                    name = 数据压缩
+                }
+
+                filter23
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gin_mid\\gin_mid.vgrp"
+                    name = GIN常用中间件
+                }
+
+                filter24
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gin_mid_zap\\gin_mid_zap.vgrp"
+                    name = GIN日志中间件
+                }
+
+                filter25
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\regexp\\regexp.vgrp"
+                    name = 正则表达式
+                }
+
+                filter26
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gin_mid_casbin\\gin_mid_casbin.vgrp"
+                    name = GIN访问控制中间件
+                }
+
+                filter27
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gjson\\s_gjson.vgrp"
+                    name = GJSON操作支持
+                }
+
+                filter28
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gormTools\\s_GormTools.vgrp"
+                    name = GORM扩展
+                }
+
+                filter29
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\Redis\\s_Redis.vgrp"
+                    name = Redis数据库
+                }
+
+                filter3
+                {
+                    collapsed = true
+                    files.num_files = 2
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gorm\\gorm.vgrp"
+                    name = GORM
+                }
+
+                filter30
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\user\\output\\details.vgrp"
+                    name = GO常用工具类
+                }
+
+                filter31
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\user\\go_cache\\details.vgrp"
+                    name = Go键值缓存类库
+                }
+
+                filter32
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\user\\HP_PACK\\HP_PACK.vgrp"
+                    name = HP_PACK通讯支持
+                }
+
+                filter33
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\goquery\\s_goquery.vgrp"
+                    name = HTML解析工具类
+                }
+
+                filter34
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\net\\https\\https.vgrp"
+                    name = HTTPS
+                }
+
+                filter35
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\goproxy\\s_goproxy.vgrp"
+                    name = HTTP代理服务器
+                }
+
+                filter36
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\ipfs\\s_ipfs.vgrp"
+                    name = IPFS分布式文件操作
+                }
+
+                filter37
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\download\\s_download.vgrp"
+                    name = 网络文件下载支持
+                }
+
+                filter38
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\ip2region\\s_ip2region.vgrp"
+                    name = IP离线查询
+                }
+
+                filter39
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\JavaScript\\s_ottoJS.vgrp"
+                    name = JavaScript脚本支持
+                }
+
+                filter4
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\log\\log.vgrp"
+                    name = 日志
+                }
+
+                filter40
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\user\\go_jwt\\details.vgrp"
+                    name = JWT生成解析类
+                }
+
+                filter41
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\Lua\\s_Lua.vgrp"
+                    name = Lua脚本
+                }
+
+                filter42
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\lunar_tool\\LunarTool.vgrp"
+                    name = lunar黄历工具
+                }
+
+                filter43
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\Markdown\\s_Markdown.vgrp"
+                    name = Markdown解析器
+                }
+
+                filter44
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\qmgo\\s_qmgo.vgrp"
+                    name = MongoDB数据库
+                }
+
+                filter45
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\mqtt\\s_mqtt.vgrp"
+                    name = MQTT
+                }
+
+                filter46
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\net\\rpc\\rpc.vgrp"
+                    name = RPC
+                }
+
+                filter47
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\RSS\\s_RSS.vgrp"
+                    name = RSS消息
+                }
+
+                filter48
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\sftp\\s_sftp.vgrp"
+                    name = SFTP客户端
+                }
+
+                filter49
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\ssh\\s_ssh.vgrp"
+                    name = SSH
+                }
+
+                filter5
+                {
+                    collapsed = true
+                    files.num_files = 2
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\sql\\sql.vgrp"
+                    name = SQL数据库
+                }
+
+                filter50
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\toml\\s_toml.vgrp"
+                    name = TOML操作支持
+                }
+
+                filter51
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\websocket\\s_websocket.vgrp"
+                    name = WebSocket支持
+                }
+
+                filter52
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\xmlquery\\s_xmlquery.vgrp"
+                    name = XML数据操作
+                }
+
+                filter53
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\yaml\\s_yaml.vgrp"
+                    name = YMAL数据访问支持
+                }
+
+                filter54
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\Zinx\\s_Zinx.vgrp"
+                    name = Zinx并发服务器
+                }
+
+                filter55
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\serial\\serial.vgrp"
+                    name = 串口通讯
+                }
+
+                filter56
+                {
+                    collapsed = true
+                    files.num_files = 2
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\qrcode\\s_qrcode.vgrp"
+                    name = 二维码条码支持
+                }
+
+                filter57
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\image\\image.vgrp"
+                    name = 图像处理
+                }
+
+                filter58
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\AI\\s_AI.vgrp"
+                    name = 人工智能
+                }
+
+                filter59
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\minify\\s_minify.vgrp"
+                    name = 代码压缩
+                }
+
+                filter6
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\reflect\\reflect.vgrp"
+                    name = 反射
+                }
+
+                filter60
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\enterprise_weixin\\s_enterprise_weixin.vgrp"
+                    name = 企业微信加解密
+                }
+
+                filter61
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\expvar\\expvar.vgrp"
+                    name = 公共变量
+                }
+
+                filter62
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\workerpool\\s_workerpool.vgrp"
+                    name = 协程池
+                }
+
+                filter63
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\compress2\\compress2.vgrp"
+                    name = 压缩包处理
+                }
+
+                filter64
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\suffixarray\\suffixarray.vgrp"
+                    name = 后缀数组
+                }
+
+                filter65
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\flag\\flag.vgrp"
+                    name = 命令行参数
+                }
+
+                filter66
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gmsm\\s_gmsm.vgrp"
+                    name = 国密算法
+                }
+
+                filter67
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\base64Captcha\\s_base64Captcha.vgrp"
+                    name = 图形验证码
+                }
+
+                filter68
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\cron\\cron.vgrp"
+                    name = 定时任务
+                }
+
+                filter69
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\wechatpay\\s_wechatpay.vgrp"
+                    name = 微信支付
+                }
+
+                filter7
+                {
+                    collapsed = true
+                    files.num_files = 2
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\math\\math.vgrp"
+                    name = 数学运算
+                }
+
+                filter70
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\fastjson\\fastjson.vgrp"
+                    name = 快速JSON数据解析
+                }
+
+                filter71
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\quic\\s_quic.vgrp"
+                    name = 快速UDP通讯
+                }
+
+                filter72
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\mimetype\\s_mimetype.vgrp"
+                    name = 文件元信息
+                }
+
+                filter73
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\user\\易语言远程服务支持库\\rpc_service.vgrp"
+                    name = 易语言远程服务支持
+                }
+
+                filter74
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\RabbitMQ\\s_RabbitMQ.vgrp"
+                    name = 消息队列
+                }
+
+                filter75
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\useragent\\s_useragent.vgrp"
+                    name = 用户代理文本解析
+                }
+
+                filter76
+                {
+                    collapsed = true
+                    files.num_files = 3
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\net\\email\\email.vgrp"
+                    name = 电子邮件
+                }
+
+                filter77
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\EmailReceive\\s_EmailReceive.vgrp"
+                    name = 电子邮件接收
+                }
+
+                filter78
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\imaging\\imaging.vgrp"
+                    name = 简单图像处理
+                }
+
+                filter79
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\gopsutil\\s_gopsutil.vgrp"
+                    name = 系统信息支持库
+                }
+
+                filter8
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\encoding\\encoding.vgrp"
+                    name = 数据编解码
+                }
+
+                filter80
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\jieba\\s_jieba.vgrp"
+                    name = 结巴分词
+                }
+
+                filter81
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\protection\\s_protection.vgrp"
+                    name = 网站防护
+                }
+
+                filter82
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\Tencent_COS\\s_Tencent_COS.vgrp"
+                    name = 腾讯云COS对象储存
+                }
+
+                filter83
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\aliyun_oss\\s_aliyun_oss.vgrp"
+                    name = 阿里云OSS对象储存
+                }
+
+                filter84
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\snowflake\\snowflake.vgrp"
+                    name = 雪花ID生成器
+                }
+
+                filter85
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\tollbooth\\tollbooth.vgrp"
+                    name = 高级限流器
+                }
+
+                filter9
+                {
+                    collapsed = true
+                    files.num_files = 1
+                    group_file_name = "*plugins\\vprj_server\\classlib\\sys\\encoding\\json\\json.vgrp"
+                    name = JSON
+                }
+
+                num_child_filters = 85
+            }
+
+            collapsed = true
+            name = 模块
+        }
+
+        num_child_filters = 1
+    }
+
+    files
+    {
+        file1.file_name = "src\\Git工作区.wsv"
+        file10.file_name = "src\\待办状态.wsv"
+        file11.file_name = "src\\工具.wsv"
+        file12.file_name = "src\\工作区.wsv"
+        file13.file_name = "src\\工作树.wsv"
+        file14.file_name = "src\\供应商.wsv"
+        file15.file_name = "src\\后台进程.wsv"
+        file16.file_name = "src\\后台任务.wsv"
+        file17.file_name = "src\\回滚.wsv"
+        file18.file_name = "src\\会话操作.wsv"
+        file19.file_name = "src\\会话恢复.wsv"
+        file2.file_name = "src\\main.wsv"
+        file20.file_name = "src\\会话可发现性.wsv"
+        file21.file_name = "src\\会话生命周期.wsv"
+        file22.file_name = "src\\会话事件.wsv"
+        file23.file_name = "src\\会话数据库.wsv"
+        file24.file_name = "src\\计量.wsv"
+        file25.file_name = "src\\技能使用.wsv"
+        file26.file_name = "src\\看板桥接.wsv"
+        file27.file_name = "src\\扩展.wsv"
+        file28.file_name = "src\\流式传输.wsv"
+        file29.file_name = "src\\路径.wsv"
+        file3.file_name = "src\\OAuth.wsv"
+        file30.file_name = "src\\路由.wsv"
+        file31.file_name = "src\\路由审批.wsv"
+        file32.file_name = "src\\轮次日志.wsv"
+        file33.file_name = "src\\命令.wsv"
+        file34.file_name = "src\\目标.wsv"
+        file35.file_name = "src\\配置.wsv"
+        file36.file_name = "src\\配置文件.wsv"
+        file37.file_name = "src\\启动.wsv"
+        file38.file_name = "src\\请求诊断.wsv"
+        file39.file_name = "src\\认证.wsv"
+        file4.file_name = "src\\Passkey.wsv"
+        file40.file_name = "src\\上传.wsv"
+        file41.file_name = "src\\数据模型.wsv"
+        file42.file_name = "src\\网关监视.wsv"
+        file43.file_name = "src\\网关聊天.wsv"
+        file44.file_name = "src\\系统健康.wsv"
+        file45.file_name = "src\\压缩锚点.wsv"
+        file46.file_name = "src\\仪表板探测.wsv"
+        file47.file_name = "src\\引导.wsv"
+        file48.file_name = "src\\运行日志.wsv"
+        file49.file_name = "src\\运行时适配器.wsv"
+        file5.file_name = "src\\插件.wsv"
+        file50.file_name = "src\\终端.wsv"
+        file51.file_name = "src\\状态同步.wsv"
+        file6.file_name = "src\\插件供应商.wsv"
+        file7.file_name = "src\\澄清.wsv"
+        file8.file_name = "src\\代理会话.wsv"
+        file9.file_name = "src\\代理健康.wsv"
+        num_files = 51
+    }
+
+    name = VoldpAiAgent
+    type = project
+}
+
+settings.project.out_types = "freebsd/amd64; darwin/amd64; darwin/arm64; linux/amd64; linux/arm64; linux/386; linux/arm; linux/riscv64; windows/amd64; windows/arm64"
