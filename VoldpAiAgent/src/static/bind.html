@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>扫码绑定</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a2e;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#16213e;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:32px 28px;
+  width:100%;max-width:380px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(145deg,#e8a030,#e94560);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:#fff;
+  margin:0 auto 16px;box-shadow:0 2px 12px rgba(233,69,96,.3)}
+h1{font-size:20px;font-weight:600;margin-bottom:8px}
+.sub{font-size:13px;color:#8888aa;margin-bottom:24px;line-height:1.5}
+.platform{font-size:14px;color:#7cb9ff;font-weight:600;margin-bottom:20px}
+.status{font-size:14px;padding:12px 16px;border-radius:10px;margin-bottom:16px;display:none}
+.status.success{display:block;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.3);color:#4ade80}
+.status.error{display:block;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);color:#f87171}
+.status.loading{display:block;background:rgba(124,185,255,.15);border:1px solid rgba(124,185,255,.3);color:#7cb9ff}
+.actions{margin-top:8px}
+button{width:100%;padding:12px;border-radius:10px;border:none;background:rgba(124,185,255,.15);
+  border:1px solid rgba(124,185,255,.3);color:#7cb9ff;font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .15s}
+button:hover{background:rgba(124,185,255,.25)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.link{margin-top:16px;font-size:12px;color:#8888aa}
+.link a{color:#7cb9ff;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">H</div>
+  <h1>扫码绑定</h1>
+  <p class="sub">您正在通过扫码绑定IM账号</p>
+  <div class="platform" id="platform"></div>
+  <div class="status" id="status"></div>
+  <div class="actions">
+    <button type="button" id="confirmBtn" onclick="doBind()">确认绑定</button>
+  </div>
+  <div class="link"><a href="/">返回首页</a></div>
+</div>
+<script>
+function getParam(name){
+  var m=new RegExp('[?&]'+name+'=([^&]*)').exec(window.location.href);
+  return m?decodeURIComponent(m[1]):'';
+}
+// 解析相对 API 路径为绝对 URL，支持子路径挂载(如 /hermes/)
+function _apiUrl(path){
+  return new URL(path,document.baseURI||location.href).href;
+}
+var platformNames={feishu:'飞书',wechat:'微信',dingtalk:'钉钉',whatsapp:'WhatsApp',telegram:'Telegram'};
+var ALLOWED_PLATFORMS=['feishu','wechat','dingtalk','whatsapp','telegram'];
+var platformParam=getParam('platform')||'';
+// 白名单校验：未知平台回退到 unknown，避免路径构造异常
+var platform=ALLOWED_PLATFORMS.indexOf(platformParam)>=0?platformParam:'unknown';
+var token=getParam('token')||'';
+document.getElementById('platform').textContent='平台：'+(platformNames[platform]||platform);
+
+function setStatus(type,msg){
+  var el=document.getElementById('status');
+  el.className='status '+type;
+  el.textContent=msg;
+}
+
+function doBind(){
+  if(!token){setStatus('error','缺少绑定令牌');return}
+  var btn=document.getElementById('confirmBtn');
+  btn.disabled=true;
+  btn.textContent='绑定中...';
+  setStatus('loading','正在完成绑定...');
+  var userId='mobile_'+Date.now();
+  var body=JSON.stringify({token:token,userId:userId,displayName:'Mobile User'});
+  fetch(_apiUrl('api/adapters/'+encodeURIComponent(platform)+'/qr/scan'),{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:body
+  })
+  .then(function(r){return r.json()})
+  .then(function(data){
+    if(data.ok){
+      setStatus('success','绑定成功！您可以关闭此页面。');
+      btn.textContent='已完成';
+      btn.disabled=true;
+    }else{
+      setStatus('error','绑定失败：'+(data.error||'未知错误'));
+      btn.disabled=false;
+      btn.textContent='重试';
+    }
+  })
+  .catch(function(e){
+    setStatus('error','网络错误：'+e.message);
+    btn.disabled=false;
+    btn.textContent='重试';
+  });
+}
+</script>
+</body>
+</html>
