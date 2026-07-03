@@ -230,9 +230,68 @@ Android 需通过 [NDK](https://developer.android.com/ndk) 交叉编译，项目
 
 ```bash
 # 通过 adb 推送到设备并赋予执行权限
-adb push VoldpAiAgent_android_arm64 /data/local/tmp/
+
+步骤 1：连接设备
+
+adb connect 你的设备地址：端口  # 网络连接，若 USB 则直接 adb shell
+例如：adb connect 192.168.3.189:5555
+adb devices                        # 确认设备状态为 device
+📤 步骤 2：推送可执行文件到 /data/local/tmp/
+
+adb push "本地文件路径\VoldpAiAgent_android_arm64" /data/local/tmp/
+例如：adb push "E:\VoldpAiAgent_android_arm64" /data/local/tmp/
+⚠️ 注意：本地路径避免中文和空格，若必须包含，请用双引号括起来。
+
+🔍 步骤 3：验证文件类型（可选但推荐）
+确认文件是 ELF 可执行文件，而非静态库：
+adb shell "head -c 20 /data/local/tmp/VoldpAiAgent_android_arm64 | od -An -tx1"
+正确输出开头应为 7f 45 4c 46（即 .ELF）。
+
+若输出 21 3c 61 72 63 68 3e（!<arch>），则是静态库，需重新获取正确文件。
+
+🔑 步骤 4：赋予执行权限
 adb shell chmod +x /data/local/tmp/VoldpAiAgent_android_arm64
-adb shell /data/local/tmp/VoldpAiAgent_android_arm64
+
+📁 步骤 5：创建必要的工作目录（解决“只读文件系统”错误）
+程序尝试在根目录创建 /.hermes，但系统分区只读。需指定可写目录（如 /data/local/tmp/hermes）：
+adb shell mkdir -p /data/local/tmp/hermes
+
+然后设置环境变量，让程序使用该目录：
+adb shell "export HERMES_WEBUI_STATE_DIR=/data/local/tmp/hermes && /data/local/tmp/VoldpAiAgent_android_arm64"
+或者更稳妥的方式：在运行命令前直接 export（若希望持久化，可写入启动脚本）。
+
+🚀 步骤 6：运行程序
+adb shell "HERMES_WEBUI_STATE_DIR=/data/local/tmp/hermes /data/local/tmp/VoldpAiAgent_android_arm64"
+程序会启动 Web 服务，默认监听 0.0.0.0:8787（允许外部访问）。您会看到日志输出，最后提示：
+VoldpAiAgent listening on http://0.0.0.0:8787
+
+🌐 步骤 7：访问 Web UI
+在电脑或同一局域网的其他设备浏览器中打开：
+http://192.168.3.189:8787   （将 IP 替换为手机的局域网 IP）
+🛠️ 常见问题及解决
+问题  原因  解决方案
+syntax error: unexpected 'newline'  文件是静态库（.a）或文本文件 重新获取正确的 ELF 可执行文件
+Exec format error   架构不匹配（如推送了 AMD64 版本）    必须使用 ARM64 版本
+inaccessible or not found   文件路径错误或未推送成功    检查 ls -l /data/local/tmp/ 确认文件名
+运行时提示 open /.hermes/config.yaml: no such file or directory  程序试图写入根目录，权限不足  设置 HERMES_WEBUI_STATE_DIR 环境变量指向可写目录
+运行时 nil pointer dereference 崩溃  数据库或配置目录不可写，导致初始化失败 同上，确保状态目录可写且已创建
+端口被占用   其他进程占用 8787 启动时选择自定义端口或 kill 占用进程
+
+📝 高级：持久化运行（后台）
+若需程序在后台运行并断开 ADB 后继续，可使用：
+adb shell "nohup HERMES_WEBUI_STATE_DIR=/data/local/tmp/hermes /data/local/tmp/VoldpAiAgent_android_arm64 &"
+日志会输出到 nohup.out，可用 adb shell cat nohup.out 查看。
+
+⚠️ 杀掉旧进程
+adb shell pkill -f VoldpAiAgent_android_arm64
+
+🧹 清理
+删除可执行文件：adb shell rm /data/local/tmp/VoldpAiAgent_android_arm64
+删除状态目录：adb shell rm -rf /data/local/tmp/hermes
+
+📌 注意事项
+确保手机与电脑在同一局域网，且防火墙未拦截 8787 端口。
+
 ```
 
 > Android 设备需开启「USB 调试」并通过 adb 连接。前端静态文件已内嵌于二进制，运行时自动释放，无需额外推送 `static/` 目录。运行后通过 `http://127.0.0.1:8787` 在设备浏览器访问，或用 `adb forward tcp:8787 tcp:8787` 转发到电脑访问。
